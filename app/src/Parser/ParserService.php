@@ -1,0 +1,269 @@
+<?php
+
+namespace App\Parser;
+
+
+use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\CssSelector\CssSelectorConverter;
+
+
+/**
+ * Class ParserService
+ * @package App\Service\Parser
+ */
+class ParserService
+{
+
+    /**
+     * @var UrlParserService
+     */
+    private $urlService;
+
+    /**
+     * ParserService constructor.
+     * @param UrlParserService $urlService
+     */
+    public function __construct(UrlParserService $urlService)
+    {
+        $this->urlService = $urlService;
+    }
+
+    /**
+     * @param $nodes
+     * @param string $nodeName
+     * @param string $childNodeName
+     * @param string $attribute
+     * @return array
+     */
+    public function getChildNodeAttributeByParentNodeNyArray(
+        $nodes,
+        string $nodeName,
+        string $childNodeName,
+        string $attribute
+    ): array
+    {
+        $result = [];
+        foreach ($nodes as $node) {
+            if ($node != null) {
+                $result[] = $this->getChildNodeAttributeByParentNode(
+                    $node->children($nodeName),
+                    $childNodeName,
+                    $attribute
+                );
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @param array $filters
+     * @param string $target
+     * @return array
+     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     */
+    public function getHtmlElementsOfTargetByFilters(array $filters, string $target): array
+    {
+        $filteredData = [];
+        foreach ($filters as $filter) {
+            $filteredData[] = $this->parseThroughHtmlByFilters
+            (
+                $this->urlService->getHtml($target),
+                $filter
+            );
+        }
+        return $filteredData;
+    }
+
+    /**
+     * @param array $urls
+     * @param string $filter
+     * @return array
+     */
+    public function getHtmlElementsOfTargetByUrlsKey(array $urls, string $filter): array
+    {
+        $filteredData = [];
+        foreach ($urls as $key) {
+            $filteredData[] = $this->getHtmlElementsOfTargetByUrls($key, $filter);
+        }
+        return $filteredData;
+    }
+
+    /**
+     * @param array $html
+     * @param string $filter
+     * @return array
+     */
+    public function getHtmlElementsOfTargetByHtml(array $html, string $filter): array
+    {
+        $filteredData = [];
+        foreach ($html as $oneHtml) {
+            if ($oneHtml != null) {
+                $filteredData[] = $this->parseThroughHtmlByFilters
+                (
+                    $oneHtml,
+                    $filter
+                );
+            }
+        }
+        return $filteredData;
+    }
+
+    /**
+     * @param array $urls
+     * @param string $filter
+     * @return array
+     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     */
+    public function getHtmlElementsOfTargetByUrls(array $urls, string $filter): array
+    {
+        $filteredData = [];
+        foreach ($urls as $url) {
+            $filteredData[] = $this->parseThroughHtmlByFilters
+            (
+                $this->urlService->getHtml($url),
+                $filter
+            );
+        }
+        return $filteredData;
+    }
+
+    /**
+     * @param string $html
+     * @param string $filter
+     * @return object|Crawler|null
+     */
+    public function parseThroughHtmlByFilters(string $html, string $filter)
+    {
+        $filterResult = null;
+        if ($html == null) {
+            return $filterResult;
+        }
+        $crawler = new Crawler($html);
+        if ($crawler->filterXPath($filter)->count() > 0) {
+            $filterResult = $crawler->filterXPath($filter);
+        }
+        return $filterResult;
+    }
+
+    /**
+     * @param $node
+     * @param string $childNodeName
+     * @param string $attribute
+     * @return array
+     */
+    public function getChildNodeAttributeByParentNode($node, string $childNodeName, string $attribute): array
+    {
+        $result = [];
+        foreach ($node as $childNode) {
+            if ($childNode != null) {
+                $crawler = new Crawler($childNode);
+                if ($crawler->filterXPath('//' . $childNodeName)->count() > 0) {
+                    $result[] = $crawler->filterXPath('//' . $childNodeName)->attr($attribute);
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @param array $nodes
+     * @param string $childNodeName
+     * @return array
+     */
+    public function getTextFromFirstChildNodeByArrayOfParentNodes(array $nodes, string $childNodeName): array
+    {
+        $result = [];
+        foreach ($nodes as $key) {
+            $result[] = $this->getTextFromFirstChildNodeByParentNode($key, $childNodeName);
+        }
+        return $result;
+    }
+
+    /**
+     * @param $node
+     * @param string $childNodeName
+     * @return array
+     */
+    public function getTextFromFirstChildNodeByParentNode($node, string $childNodeName): array
+    {
+        $result = [];
+        foreach ($node as $childNode) {
+            if ($childNode == null) {
+                $result[] = null;
+            } else {
+                $result[] = $childNode->filterXPath('//' . $childNodeName)->first()->text() ?? null;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @param $nodes
+     * @param string $childNodeName
+     * @return array
+     */
+    public function getChildNodes($nodes, string $childNodeName): array
+    {
+        $result = [];
+        foreach ($nodes as $node) {
+            if ($node == null) {
+                $result[] = null;
+                continue;
+            }
+            $result[] = $node->children($childNodeName);
+        }
+        return $result;
+    }
+
+    /**
+     * @param $CSS
+     * @return string
+     */
+    public function getCSSToXpath($CSS): string
+    {
+        $converter = new CssSelectorConverter();
+        return $converter->toXPath($CSS);
+    }
+
+    /**
+     * @param $domElements
+     * @param string $elemName
+     * @return array
+     */
+    public function getCrawlerNodeFromDomElement($domElements, string $elemName): array
+    {
+        $elements = [];
+        foreach ($domElements as $e) {
+            $elements[] = $this->getChildNodes(
+                $this->getHtmlElementsOfTargetByHtml(
+                    [$e->ownerDocument->saveHTML($e)],
+                    $this->getCSSToXpath($elemName)
+                ),
+                $elemName
+            );
+        }
+        return $elements;
+    }
+
+    /**
+     * @param $ekemebts
+     * @param int $consecutiveNumber
+     * @return mixed
+     */
+    public function getElementByItsConsecutiveNumber($ekemebts, int $consecutiveNumber)
+    {
+        $elemNumber = 1;
+        foreach ($ekemebts as $e) {
+            if ($elemNumber == $consecutiveNumber) {
+                return $e;
+            }
+            $elemNumber++;
+        }
+    }
+}
