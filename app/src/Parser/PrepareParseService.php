@@ -41,7 +41,7 @@ class PrepareParseService
     )
     {
         echo 'Driver path: ' . $pathToDriver . PHP_EOL;
-        echo $this->border . PHP_EOL . 'Starting...' . PHP_EOL;
+        echo $this->border . PHP_EOL . 'Starting...' . PHP_EOL . PHP_EOL;
 
         foreach ($instagramUsernames as $instagramUsername) {
 
@@ -53,6 +53,7 @@ class PrepareParseService
             );
 
 
+            // save data
 
         }
     }

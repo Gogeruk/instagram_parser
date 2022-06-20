@@ -33,11 +33,12 @@ class UrlParserService
         ]);
     }
 
+
     /**
      * @param string $url
-     * @param HttpClientInterface|null $customHttpClient
      * @param string $requestMethod
-     * @return string
+     * @param HttpClientInterface|null $customHttpClient
+     * @return string|null
      * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
@@ -46,9 +47,9 @@ class UrlParserService
     public function getHtml
     (
         string                   $url,
-        HttpClientInterface|null $customHttpClient = null,
-        string                   $requestMethod = 'GET'
-    ) : string
+        string                   $requestMethod = 'GET',
+        HttpClientInterface|null $customHttpClient = null
+    ) : string|null
     {
         if ($customHttpClient !== null) {
             $response = $customHttpClient->request($requestMethod, $url);
@@ -58,9 +59,11 @@ class UrlParserService
         try {
             return $response->getContent();
         } catch (\Exception $e) {
-            return '';
+            echo $e->getMessage() . PHP_EOL;
+            return null;
         }
     }
+
 
     /**
      * @param array $headers
