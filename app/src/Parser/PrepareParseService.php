@@ -56,9 +56,7 @@ class PrepareParseService
                 $instagramUsername
             );
 
-
             // save data
-
         }
     }
 }

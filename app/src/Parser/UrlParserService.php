@@ -225,8 +225,8 @@ class UrlParserService
     public function getClient
     (
         Client|null $client,
-        string $url,
-        string $pathToDriver
+        string      $url,
+        string      $pathToDriver
     ): Client
     {
         // open browser and make a request
