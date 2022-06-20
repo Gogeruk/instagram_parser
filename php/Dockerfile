@@ -11,12 +11,6 @@ RUN apt update \
 
 
 # Install panther driver for firefox
-RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-linux64.tar.gz
-RUN tar -xvzf geckodriver*
-RUN chmod +x geckodriver
-RUN mv geckodriver /usr/bin/
-RUN rm geckodriver-v0.31.0-linux64.tar.gz
-
 RUN echo "deb http://deb.debian.org/debian/ unstable main contrib non-free" >> /etc/apt/sources.list.d/debian.list
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends firefox
