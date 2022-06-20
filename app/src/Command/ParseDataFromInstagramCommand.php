@@ -19,7 +19,6 @@ class ParseDataFromInstagramCommand extends Command
 {
     protected static $defaultName = 'app:parse';
 
-
     /**
      * @var ParameterBagInterface
      */
@@ -55,25 +54,33 @@ class ParseDataFromInstagramCommand extends Command
 
     protected function configure(): void
     {
+        $this
+            ->addArgument('usernames', InputArgument::IS_ARRAY)
+        ;
     }
-
 
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int
+     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         echo 'Get data from Instagram...' . PHP_EOL;
 
-
-
+        $usernames = $input->getArgument('usernames');
+        if ($usernames == null) {
+            $usernames = ['Gogeruk'];
+        }
 
         $this->prepareParseService->parseDataFromInstagram
         (
             $this->parameterBag->get('kernel.project_dir') . "/drivers/geckodriver",
-            ['Gogeruk']
+            $usernames
         );
 
         echo 'DONE' . PHP_EOL;

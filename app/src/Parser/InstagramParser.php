@@ -47,7 +47,7 @@ class InstagramParser
     {
         $profileUrl = 'https://dumpor.com/v/'. urlencode($instagramUsername);
 
-        // open browser and make a request
+        // open a browser and make a request
         $client = $this->urlService->getClient
         (
             null,
@@ -67,7 +67,7 @@ class InstagramParser
 
 
         // get data
-        // get an artist name from this url
+        // get an user's name
         $artistName = $this->parserService->getTextFromTargetDDMElement
             (
                 [$html],
@@ -84,7 +84,7 @@ class InstagramParser
                 'h1'
             )[0][0] ?? 'NONE';
 
-        // get artist image url
+        // get user's image url
         preg_match_all
         (
             "/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i",
@@ -106,6 +106,7 @@ class InstagramParser
             $artistImageUrl,
             PREG_PATTERN_ORDER
         );
+
 
 
         $data[] = $artistName;

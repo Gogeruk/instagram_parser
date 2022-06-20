@@ -31,8 +31,12 @@ class PrepareParseService
 
     /**
      * @param string $pathToDriver
-     * @param array $names
+     * @param array $instagramUsernames
      * @return void
+     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
     public function parseDataFromInstagram
     (
