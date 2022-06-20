@@ -4,7 +4,6 @@ namespace App\Parser;
 
 /**
  * Class PrepareParseService
- * @package App\Service\UrlPlacesParserServices
  */
 class PrepareParseService
 {
@@ -14,49 +13,47 @@ class PrepareParseService
     public $border = '+-----------------------------------------------------------------------+';
 
     /**
-     * @var ParsedDataProcessor
-     */
-    private $parsedDataProcessor;
-
-    /**
      * @var InstagramParser
      */
-    private $instagramParser;
-
+    private InstagramParser $instagramParser;
 
     /**
-     * @param ParsedDataProcessor $parsedDataProcessor
+     * @param InstagramParser $instagramParser
      */
     public function __construct
     (
-        ParsedDataProcessor $parsedDataProcessor,
-        InstagramParser     $instagramParser
+        InstagramParser $instagramParser
     )
     {
-        $this->parsedDataProcessor = $parsedDataProcessor;
         $this->instagramParser = $instagramParser;
     }
 
 
-
-
+    /**
+     * @param string $pathToDriver
+     * @param array $names
+     * @return void
+     */
     public function parseDataFromInstagram
     (
-        string $pathToDriver
+        string $pathToDriver,
+        array  $instagramUsernames
     )
     {
         echo 'Driver path: ' . $pathToDriver . PHP_EOL;
         echo $this->border . PHP_EOL . 'Starting...' . PHP_EOL;
 
+        foreach ($instagramUsernames as $instagramUsername) {
 
-        // get data form tripadvisor
-        $data = $this->instagramParser->getDataFromInstagram
-        (
-            $pathToDriver
-        );
+            // get data form dumpor.com
+            $data = $this->instagramParser->getDataFromDumpor
+            (
+                $pathToDriver,
+                $instagramUsername
+            );
 
+
+
+        }
     }
-
-
-
 }

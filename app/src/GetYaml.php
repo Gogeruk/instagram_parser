@@ -13,7 +13,7 @@ class GetYaml
     /**
      * @var ParameterBagInterface
      */
-    private $parameterBag;
+    private ParameterBagInterface $parameterBag;
 
 
     /**

@@ -9,21 +9,22 @@ use Symfony\Component\CssSelector\CssSelectorConverter;
 
 /**
  * Class ParserService
- * @package App\Service\Parser
+ * @package App\Parser
  */
 class ParserService
 {
-
     /**
      * @var UrlParserService
      */
-    private $urlService;
+    private UrlParserService $urlService;
 
     /**
-     * ParserService constructor.
      * @param UrlParserService $urlService
      */
-    public function __construct(UrlParserService $urlService)
+    public function __construct
+    (
+        UrlParserService $urlService
+    )
     {
         $this->urlService = $urlService;
     }
@@ -52,8 +53,47 @@ class ParserService
                 );
             }
         }
+
         return $result;
     }
+
+
+    /**
+     * @param array $html
+     * @param string $xPathFilter
+     * @param string $targetDOMElementName
+     * @return array
+     */
+    public function getTextFromTargetDDMElement
+    (
+        array  $html,
+        string $xPathFilter,
+        string $targetDOMElementName
+    ): array
+    {
+        $node = $this->getChildNodes(
+            $this->getHtmlElementsOfTargetByHtml(
+                $html,
+                $xPathFilter
+            ),
+            $targetDOMElementName
+        );
+
+        $text = [];
+        foreach ($node as $key => $crawler) {
+            $text[$key] = null;
+            if ($crawler != null) {
+                foreach ($crawler as $element) {
+                    if ($element != null) {
+                        $text[$key][] = $element->nodeValue;
+                    }
+                }
+            }
+        }
+
+        return $text;
+    }
+
 
     /**
      * @param array $filters
@@ -74,6 +114,7 @@ class ParserService
                 $filter
             );
         }
+
         return $filteredData;
     }
 
@@ -88,8 +129,118 @@ class ParserService
         foreach ($urls as $key) {
             $filteredData[] = $this->getHtmlElementsOfTargetByUrls($key, $filter);
         }
+
         return $filteredData;
     }
+
+
+    /**
+     * @param array $html
+     * @param string $xPathFilter
+     * @param string $targetParentDOMElementName
+     * @return array
+     */
+    public function getHTMLTextFromTargetDDMElementsFromWithinParentDDMElement
+    (
+        array  $html,
+        string $xPathFilter,
+        string $targetParentDOMElementName
+    ): array
+    {
+        $node = $this->getChildNodes(
+            $this->getHtmlElementsOfTargetByHtml(
+                $html,
+                $xPathFilter
+            ),
+            $targetParentDOMElementName
+        );
+
+        $text = [];
+        foreach ($node as $key => $crawler) {
+            $text[$key] = null;
+            if ($crawler != null) {
+                foreach ($crawler as $element) {
+                    if ($element != null) {
+                        $item = 1;
+                        while (true) {
+                            $child = $element->childNodes->item($item);
+                            $item++;
+                            if ($child == null) {
+                                break;
+                            }
+                            $html = $child->ownerDocument->saveHTML($child);
+                            if (mb_strlen($html) > 5) {
+                                $text[$key][] = $html;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return $text;
+    }
+
+
+    /**
+     * @param array $html
+     * @param string $xPathFilter
+     * @param string $targetParentDOMElementName
+     * @param string $targetChildDOMElementName
+     * @param string $targetChildDOMElementAttributesName
+     * @return array
+     */
+    public function getAtributeTextFromTargetDDMElementsFromWithinParentDDMElement
+    (
+        array  $html,
+        string $xPathFilter,
+        string $targetParentDOMElementName,
+        string $targetChildDOMElementName,
+        string $targetChildDOMElementAttributesName
+    ): array
+    {
+        $node = $this->getChildNodes(
+            $this->getHtmlElementsOfTargetByHtml(
+                $html,
+                $xPathFilter
+            ),
+            $targetParentDOMElementName
+        );
+
+        $attributes = [];
+        foreach ($node as $key => $element) {
+            $attributes[$key] = [];
+            if ($element != null) {
+                $attributes[$key] = $this->getChildNodeAttributeByParentNode
+                (
+                    $element,
+                    $targetChildDOMElementName,
+                    $targetChildDOMElementAttributesName
+                );
+            }
+        }
+
+        return $attributes;
+    }
+
+
+    /**
+     * @param string $html
+     * @param string $regex
+     * @return bool
+     */
+    public function htmlOfUrlRegexCheck
+    (
+        string $html,
+        string $regex
+    ) : bool
+    {
+        if (preg_match($regex, $html)) {
+            return true;
+        }
+        return false;
+    }
+    
 
     /**
      * @param array $html
@@ -108,6 +259,7 @@ class ParserService
                 );
             }
         }
+
         return $filteredData;
     }
 
@@ -130,6 +282,7 @@ class ParserService
                 $filter
             );
         }
+
         return $filteredData;
     }
 
@@ -138,18 +291,18 @@ class ParserService
      * @param string $filter
      * @return object|Crawler|null
      */
-    public function parseThroughHtmlByFilters(string $html, string $filter)
+    public function parseThroughHtmlByFilters(string $html, string $filter) : Crawler|null
     {
         $filterResult = null;
-        if ($html == null) {
-            return $filterResult;
-        }
+
         $crawler = new Crawler($html);
         if ($crawler->filterXPath($filter)->count() > 0) {
             $filterResult = $crawler->filterXPath($filter);
         }
+
         return $filterResult;
     }
+
 
     /**
      * @param $node
@@ -168,8 +321,10 @@ class ParserService
                 }
             }
         }
+
         return $result;
     }
+
 
     /**
      * @param array $nodes
@@ -182,6 +337,7 @@ class ParserService
         foreach ($nodes as $key) {
             $result[] = $this->getTextFromFirstChildNodeByParentNode($key, $childNodeName);
         }
+
         return $result;
     }
 
@@ -200,6 +356,7 @@ class ParserService
                 $result[] = $childNode->filterXPath('//' . $childNodeName)->first()->text() ?? null;
             }
         }
+
         return $result;
     }
 
@@ -218,6 +375,7 @@ class ParserService
             }
             $result[] = $node->children($childNodeName);
         }
+
         return $result;
     }
 
@@ -230,6 +388,7 @@ class ParserService
         $converter = new CssSelectorConverter();
         return $converter->toXPath($CSS);
     }
+
 
     /**
      * @param $domElements
@@ -248,13 +407,15 @@ class ParserService
                 $elemName
             );
         }
+
         return $elements;
     }
+
 
     /**
      * @param $ekemebts
      * @param int $consecutiveNumber
-     * @return mixed
+     * @return mixed|void
      */
     public function getElementByItsConsecutiveNumber($ekemebts, int $consecutiveNumber)
     {
@@ -263,6 +424,7 @@ class ParserService
             if ($elemNumber == $consecutiveNumber) {
                 return $e;
             }
+
             $elemNumber++;
         }
     }

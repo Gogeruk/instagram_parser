@@ -23,17 +23,17 @@ class ParseDataFromInstagramCommand extends Command
     /**
      * @var ParameterBagInterface
      */
-    private $parameterBag;
+    private ParameterBagInterface $parameterBag;
 
     /**
      * @var PrepareParseService
      */
-    protected $prepareParseService;
+    protected PrepareParseService $prepareParseService;
 
     /**
      * @var GetYaml
      */
-    protected $getYaml;
+    protected GetYaml $getYaml;
 
     /**
      * @param PrepareParseService $prepareParseService
@@ -72,9 +72,9 @@ class ParseDataFromInstagramCommand extends Command
 
         $this->prepareParseService->parseDataFromInstagram
         (
-            $this->parameterBag->get('kernel.project_dir') . "/drivers/geckodriver"
+            $this->parameterBag->get('kernel.project_dir') . "/drivers/geckodriver",
+            ['Gogeruk']
         );
-
 
         echo 'DONE' . PHP_EOL;
         return Command::SUCCESS;

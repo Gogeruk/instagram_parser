@@ -2,33 +2,29 @@
 
 namespace App\Parser;
 
-use phpDocumentor\Reflection\Types\This;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\Panther\Client;
 use Symfony\Component\BrowserKit\Cookie;
-use Symfony\Component\BrowserKit;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
  * Class UrlParserService
- * @package App\Service\UrlPlacesParserServices
+ * @package App\Parser
  */
 class UrlParserService
 {
 
     /**
-     * @var \Symfony\Contracts\HttpClient\HttpClientInterface
+     * @var HttpClientInterface
      */
     private $client;
 
-    /**
-     * UrlParserService constructor.
-     */
     public function __construct()
     {
         $this->client = HttpClient::create(['headers' => [
             "Cache-Control" => "max-age=0",
             "Accept" => "text/html,application/xhtml+xml,application/xml;q =0.9,image/webp,*/*;q=0.8",
-            "User-Agent" => "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36",
+            "User-Agent" => $this->getRandomUserAgent(),
             "HTTPS" => "1",
             "DNT" => "1",
             "Referer" => "https://www.google.com/",
@@ -39,7 +35,7 @@ class UrlParserService
 
     /**
      * @param string $url
-     * @param null $customHttpClient
+     * @param HttpClientInterface|null $customHttpClient
      * @param string $requestMethod
      * @return string
      * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
@@ -47,11 +43,12 @@ class UrlParserService
      * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
-    public function getHtml(
-        string $url,
-               $customHttpClient = null,
-        string $requestMethod = 'GET'
-    )
+    public function getHtml
+    (
+        string                   $url,
+        HttpClientInterface|null $customHttpClient = null,
+        string                   $requestMethod = 'GET'
+    ) : string
     {
         if ($customHttpClient !== null) {
             $response = $customHttpClient->request($requestMethod, $url);
@@ -86,6 +83,24 @@ class UrlParserService
         return $this->client->request($method, $url, $options);
     }
 
+
+    /**
+     * @param $html
+     * @return array
+     */
+    public function getAllUrls($html): array
+    {
+        preg_match_all
+        (
+            "/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i",
+            html_entity_decode($html),
+            $resultUrls,
+            PREG_PATTERN_ORDER
+        );
+        return array_unique($resultUrls[0]);
+    }
+
+
     /**
      * @param array $cookie
      * @return Cookie
@@ -109,7 +124,6 @@ class UrlParserService
     /**
      * @param string $url
      * @param string $pathToDriver
-     * @param bool $firefox
      * @param array $cookieInfo
      * @param bool $followRedirects
      * @return Client
@@ -118,45 +132,25 @@ class UrlParserService
     (
         string $url,
         string $pathToDriver,
-        bool   $firefox = false,
         array  $cookieInfo = [],
         bool   $followRedirects = false
     ): Client
     {
-        if ($firefox === false) {
-            $client = Client::createChromeClient(
-                $pathToDriver,
-                [
-                    '--user-agent=' . $this->getRandomUserAgent(),
-                    '--headless',
-                    '--window-size=1280,693',
-                    '--disable-gpu',
-                    '--disable-dev-shm-usage',
-                    '--remote-debugging-port=9222',
-                    '--no-sandbox'
-                ],
-                [
-                    'request_timeout_in_ms' => 600000,
-                    'connection_timeout_in_ms' => 600000,
-                ]
-            );
-        } else {
-            $client = Client::createFirefoxClient
-            (
-                $pathToDriver,
-                [
-                    '--user-agent=' . $this->getRandomUserAgent(),
-                    '--window-size=1280,693',
-                    '--headless',
-                    '--disable-gpu',
-                    '--no-sandbox',
-                ],
-                [
-                    'request_timeout_in_ms' => 600000,
-                    'connection_timeout_in_ms' => 600000,
-                ]
-            );
-        }
+        $client = Client::createFirefoxClient
+        (
+            $pathToDriver,
+            [
+                '--user-agent=' . $this->getRandomUserAgent(),
+                '--window-size=1280,693',
+                '--headless',
+                '--disable-gpu',
+                '--no-sandbox',
+            ],
+            [
+                'request_timeout_in_ms' => 600000,
+                'connection_timeout_in_ms' => 600000,
+            ]
+        );
 
         if ($followRedirects === true) {
             $client->followRedirects();
@@ -174,6 +168,7 @@ class UrlParserService
 
         return $client;
     }
+
 
     /**
      * @param string $url
@@ -197,6 +192,7 @@ class UrlParserService
         foreach ($targetSubDoms as $subDom) {
             $result[] = $url['scheme'] . '://' . $subDom . '.' . $url['host'] . $url['path'];
         }
+
         return $result;
     }
 
@@ -212,17 +208,48 @@ class UrlParserService
         foreach ($hrefs as $href) {
             $result[] = $url['scheme'] . '://' . $url['host'] . $href;
         }
+
         return $result;
     }
 
+
     /**
+     * @param Client|null $client
      * @param string $url
-     * @param string $param
-     * @return string
+     * @param string $pathToDriver
+     * @return Client
      */
-    function addParamToUrl(string $url, string $param): string
+    public function getClient
+    (
+        Client|null $client,
+        string $url,
+        string $pathToDriver
+    ): Client
     {
-        return $url . '?' . $param;
+        // open browser and make a request
+        if (!isset($client)) {
+            $client = $this->summonPantherClientAndMakeRequest
+            (
+                $url,
+                $pathToDriver
+            );
+        } else {
+
+            // try to make a new request to the next image url
+            sleep(0.5); // sleep is important
+            try {
+                $client->request('GET', $url);
+            } catch (\Exception $e) {
+                $client = $this->summonPantherClientAndMakeRequest
+                (
+                    $url,
+                    $pathToDriver,
+                    true
+                );
+            }
+        }
+
+        return $client;
     }
 
 

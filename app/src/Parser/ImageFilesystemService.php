@@ -15,7 +15,7 @@ class ImageFilesystemService
     /**
      * @var ParameterBagInterface
      */
-    private $parameterBag;
+    private ParameterBagInterface $parameterBag;
 
     /**
      * @param ParameterBagInterface $parameterBag\
@@ -31,16 +31,16 @@ class ImageFilesystemService
 
     /**
      * @param string $dirName
-     * @param string|false $dirPath
-     * $dirPath = false is a default path to the image dir
+     * @param $dirPath
      * @param int $permission
+     * @return void
      */
     public function makeDirectory
     (
         string $dirName,
         $dirPath = false,
         int $permission = 0775
-    )
+    ) : void
     {
         if ($dirPath === false) {
 
