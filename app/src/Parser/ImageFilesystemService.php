@@ -95,8 +95,7 @@ class ImageFilesystemService
 
             return [
                 'path' => substr($path . $year . '/' . $month . '/' . $day . '/', 8) . $ran . $pathParts['basename'],
-                'name' => $ran . $pathParts['basename'],
-                'type' => 'general'
+                'name' => $ran . $pathParts['basename']
             ];
 
         } catch (\Exception $e) {

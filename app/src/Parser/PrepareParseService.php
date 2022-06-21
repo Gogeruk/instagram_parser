@@ -69,8 +69,12 @@ class PrepareParseService
             // save data
             $check = $this->saveParsedData->saveParsedDataWithTransaction
             (
-
-                $data['images']
+                $data['username'],
+                $data['name'],
+                $data['description'],
+                $data['images'],
+                $data['posts']['text'],
+                $data['posts']['img']
             );
 
             if ($check === true) {

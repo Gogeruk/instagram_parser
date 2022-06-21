@@ -2,6 +2,8 @@
 
 namespace App\Parser;
 
+use App\Entity\PostVisual;
+use App\Entity\Visual;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\InstagramUser;
 use App\Repository\InstagramUserRepository;
@@ -27,26 +29,39 @@ class SaveParsedData
      */
     private InstagramUserRepository $instagramUserRepository;
 
+    /**
+     * @var ParsedDataProcessor
+     */
+    private ParsedDataProcessor $parsedDataProcessor;
+
 
     /**
-     * @param EntityManagerInterface $em
-     * @param ImageFilesystemService $imageFilesystemService
-     * @param InstagramUserRepository $instagramUserRepository
      */
     public function __construct
     (
+        ParsedDataProcessor  $parsedDataProcessor,
         EntityManagerInterface  $em,
         ImageFilesystemService  $imageFilesystemService,
         InstagramUserRepository $instagramUserRepository
     )
     {
         $this->em = $em;
+        $this->parsedDataProcessor = $parsedDataProcessor;
         $this->imageFilesystemService = $imageFilesystemService;
         $this->instagramUserRepository = $instagramUserRepository;
     }
 
 
-
+    /**
+     * @param string $instagramUserUsername
+     * @param string|null $instagramUserName
+     * @param string|null $instagramUserDescription
+     * @param array|null $instagramUserVisualUrls
+     * @param array|null $postTexts
+     * @param array|null $postVisualUrls
+     * @return bool
+     * @throws \Doctrine\DBAL\Exception
+     */
     public function saveParsedDataWithTransaction
     (
         string  $instagramUserUsername,
@@ -66,8 +81,8 @@ class SaveParsedData
             $instagramUser = $this->getInstagramUser
             (
                 $instagramUserUsername,
-                $instagramUserName,
-                $instagramUserDescription
+                $this->parsedDataProcessor->removeEmojis($instagramUserName),
+                $this->parsedDataProcessor->getCorrectStrLen($this->parsedDataProcessor->removeEmojis($instagramUserDescription), 500),
             );
 
             // save Instagram User Visual
@@ -76,12 +91,21 @@ class SaveParsedData
                 // save visual to the box
                 $visualSavedCheck = $this->imageFilesystemService->saveVisual($instagramUserVisualUrl);
 
+                print_r($visualSavedCheck);
 
                 // save visual to db
-                // make visual
+                if (!is_bool($visualSavedCheck)) {
 
-                // add visual
-                $instagramUser->addVisual();
+                    // make visual
+                    $instagramUserVisual = $this->getSaveVisual
+                    (
+                        $visualSavedCheck['name'],
+                        $visualSavedCheck['path']
+                    );
+
+                    // add visual
+                    $instagramUser->addVisual($instagramUserVisual);
+                }
             }
 
 
@@ -100,6 +124,48 @@ class SaveParsedData
 
         $this->em->clear();
         return true;
+    }
+
+
+    /**
+     * @param string $visualName
+     * @param string $visualPath
+     * @return Visual
+     */
+    public function getSaveVisual
+    (
+        string  $visualName,
+        string  $visualPath,
+    ) : Visual
+    {
+        // save Instagram User
+        $visual = new Visual();
+        $visual->setName($visualName);
+        $visual->setPath($visualPath);
+
+        $this->em->persist($visual);
+        return $visual;
+    }
+
+
+    /**
+     * @param string $visualName
+     * @param string $visualPath
+     * @return Visual
+     */
+    public function getSavePostVisual
+    (
+        string  $visualName,
+        string  $visualPath,
+    ) : Visual
+    {
+        // save Instagram User
+        $visual = new PostVisual();
+        $visual->setName($visualName);
+        $visual->setPath($visualPath);
+
+        $this->em->persist($visual);
+        return $visual;
     }
 
 
