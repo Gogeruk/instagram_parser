@@ -17,15 +17,25 @@ class PrepareParseService
      */
     private InstagramParser $instagramParser;
 
+
+    /**
+     * @var SaveParsedData
+     */
+    private SaveParsedData $saveParsedData;
+
+
     /**
      * @param InstagramParser $instagramParser
+     * @param SaveParsedData $saveParsedData
      */
     public function __construct
     (
-        InstagramParser $instagramParser
+        InstagramParser $instagramParser,
+        SaveParsedData $saveParsedData
     )
     {
         $this->instagramParser = $instagramParser;
+        $this->saveParsedData = $saveParsedData;
     }
 
 
@@ -57,8 +67,14 @@ class PrepareParseService
             );
 
             // save data
-//            print_r($data);
-//            exit();
+            $check = $this->saveParsedData->saveParsedDataWithTransaction
+            (
+
+            );
+
+            if ($check === true) {
+                echo 'AAAAAA' . PHP_EOL;
+            }
 
 
 
