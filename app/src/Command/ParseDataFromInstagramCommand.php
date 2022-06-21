@@ -9,7 +9,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use App\GetYaml;
+use App\YamlData\GetYaml;
 
 /**
  * Class ParseDataFromInstagramCommand
@@ -74,7 +74,12 @@ class ParseDataFromInstagramCommand extends Command
 
         $usernames = $input->getArgument('usernames');
         if ($usernames == null) {
-            $usernames = ['Gogeruk'];
+
+            // get usernames from ....
+            $usernames = $this->getYaml->getArrayFromYaml
+            (
+                $this->parameterBag->get('kernel.project_dir') . "/src/YamlData/InstagramUsernames.yaml",
+            );
         }
 
         $this->prepareParseService->parseDataFromInstagram
