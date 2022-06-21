@@ -72,6 +72,7 @@
         }
     },
     "require-dev": {
-        "dbrekelmans/bdi": "^1.0"
+        "dbrekelmans/bdi": "^1.0",
+        "symfony/maker-bundle": "^1.43"
     }
 }
