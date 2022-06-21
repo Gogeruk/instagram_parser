@@ -2,6 +2,7 @@
 
 namespace App\Parser;
 
+use App\Entity\Post;
 use App\Entity\PostVisual;
 use App\Entity\Visual;
 use Doctrine\ORM\EntityManagerInterface;
@@ -36,6 +37,10 @@ class SaveParsedData
 
 
     /**
+     * @param ParsedDataProcessor $parsedDataProcessor
+     * @param EntityManagerInterface $em
+     * @param ImageFilesystemService $imageFilesystemService
+     * @param InstagramUserRepository $instagramUserRepository
      */
     public function __construct
     (
@@ -91,8 +96,6 @@ class SaveParsedData
                 // save visual to the box
                 $visualSavedCheck = $this->imageFilesystemService->saveVisual($instagramUserVisualUrl);
 
-                print_r($visualSavedCheck);
-
                 // save visual to db
                 if (!is_bool($visualSavedCheck)) {
 
@@ -109,8 +112,31 @@ class SaveParsedData
             }
 
 
+            foreach ($postTexts as $key => $postText) {
 
+                // save Instagram User Post
+                $instagramUserPost = $this->getSaveInstagramUserPost
+                (
+                    $this->parsedDataProcessor->getCorrectStrLen($this->parsedDataProcessor->removeEmojis($postText), 500),
+                );
 
+                // save visual to the box
+                $visualSavedCheck = $this->imageFilesystemService->saveVisual($postVisualUrls[$key]);
+
+                // save visual to db
+                if (!is_bool($visualSavedCheck)) {
+
+                    // make visual
+                    $instagramUserPostVisual = $this->getSavePostVisual
+                    (
+                        $visualSavedCheck['name'],
+                        $visualSavedCheck['path']
+                    );
+
+                    // add visual
+                    $instagramUserPost->addPostVisual($instagramUserPostVisual);
+                }
+            }
 
 
             $this->em->flush();
@@ -157,7 +183,7 @@ class SaveParsedData
     (
         string  $visualName,
         string  $visualPath,
-    ) : Visual
+    ) : PostVisual
     {
         // save Instagram User
         $visual = new PostVisual();
@@ -233,12 +259,20 @@ class SaveParsedData
     }
 
 
+    /**
+     * @param string|null $instagramUserPostText
+     * @return Post
+     */
+    public function getSaveInstagramUserPost
+    (
+        ?string $instagramUserPostText,
+    ) : Post
+    {
+        // save Instagram User Post
+        $post = new Post();
+        $post->setText($instagramUserPostText);
 
-
-
-
-
-
-
-
+        $this->em->persist($post);
+        return $post;
+    }
 }
