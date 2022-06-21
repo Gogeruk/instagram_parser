@@ -9,7 +9,6 @@ use Symfony\Component\CssSelector\CssSelectorConverter;
 
 /**
  * Class ParserService
- * @package App\Parser
  */
 class ParserService
 {

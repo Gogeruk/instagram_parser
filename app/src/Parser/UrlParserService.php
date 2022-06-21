@@ -9,7 +9,6 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
  * Class UrlParserService
- * @package App\Parser
  */
 class UrlParserService
 {

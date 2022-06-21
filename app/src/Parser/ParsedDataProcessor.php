@@ -5,7 +5,6 @@ namespace App\Parser;
 
 /**
  * Class ParsedDataProcessor
- * @package App\Parser
  */
 class ParsedDataProcessor
 {

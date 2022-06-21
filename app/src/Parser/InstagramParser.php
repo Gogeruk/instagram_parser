@@ -58,6 +58,14 @@ class InstagramParser
         // wait a little for the profile to load
         sleep(0.5);
 
+        // load more posts
+        $start = 1500;
+        for ($i = 0; $i < 1500; $i++) {
+            $client->executeScript('window.scrollTo(1, ' . $start . ');');
+            $client->executeScript('window.scrollTo(1, 1);');
+            $start = $start + 250;
+        }
+
         // get html
         $html = html_entity_decode($client->getPageSource());
 
