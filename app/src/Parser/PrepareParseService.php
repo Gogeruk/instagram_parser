@@ -31,7 +31,7 @@ class PrepareParseService
     public function __construct
     (
         InstagramParser $instagramParser,
-        SaveParsedData $saveParsedData
+        SaveParsedData  $saveParsedData
     )
     {
         $this->instagramParser = $instagramParser;
@@ -70,20 +70,12 @@ class PrepareParseService
             $check = $this->saveParsedData->saveParsedDataWithTransaction
             (
 
+                $data['images']
             );
 
             if ($check === true) {
-                echo 'AAAAAA' . PHP_EOL;
+                echo 'SAVED USER: ' . $data['username'] . PHP_EOL;
             }
-
-
-
-
-
-
-
-
-
         }
     }
 }

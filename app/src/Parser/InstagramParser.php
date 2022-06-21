@@ -126,6 +126,7 @@ class InstagramParser
         $artistImageUrl,
         PREG_PATTERN_ORDER
         );
+        $data['images'] = $artistImageUrl[0];
 
         // get description
         $data['description'] = $this->parserService->getTextFromTargetDDMElement

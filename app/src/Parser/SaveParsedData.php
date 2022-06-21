@@ -3,8 +3,8 @@
 namespace App\Parser;
 
 use Doctrine\ORM\EntityManagerInterface;
-use App\Entity\InstagramUser
-use App\Repository\InstagramUserRepository
+use App\Entity\InstagramUser;
+use App\Repository\InstagramUserRepository;
 
 
 /**
@@ -18,6 +18,11 @@ class SaveParsedData
     private EntityManagerInterface $em;
 
     /**
+     * @var ImageFilesystemService
+     */
+    private ImageFilesystemService $imageFilesystemService;
+
+    /**
      * @var InstagramUserRepository
      */
     private InstagramUserRepository $instagramUserRepository;
@@ -25,28 +30,23 @@ class SaveParsedData
 
     /**
      * @param EntityManagerInterface $em
+     * @param ImageFilesystemService $imageFilesystemService
      * @param InstagramUserRepository $instagramUserRepository
      */
     public function __construct
     (
-        EntityManagerInterface $em,
+        EntityManagerInterface  $em,
+        ImageFilesystemService  $imageFilesystemService,
         InstagramUserRepository $instagramUserRepository
     )
     {
         $this->em = $em;
+        $this->imageFilesystemService = $imageFilesystemService;
         $this->instagramUserRepository = $instagramUserRepository;
     }
 
-    /**
-     * @param string $instagramUserUsername
-     * @param string|null $instagramUserName
-     * @param string|null $instagramUserDescription
-     * @param array|null $visualUrl
-     * @param array|null $postText
-     * @param array|null $postVisualUrl
-     * @return bool
-     * @throws \Doctrine\DBAL\Exception
-     */
+
+
     public function saveParsedDataWithTransaction
     (
         string  $instagramUserUsername,
@@ -71,14 +71,18 @@ class SaveParsedData
             );
 
             // save Instagram User Visual
-//            foreach ($instagramUserVisualUrls as $instagramUserVisualUrl) {
-//
-//                // save visual
-//
-//                // save visual to db
-//
-//            }
+            foreach ($instagramUserVisualUrls as $instagramUserVisualUrl) {
 
+                // save visual to the box
+                $visualSavedCheck = $this->imageFilesystemService->saveVisual($instagramUserVisualUrl);
+
+
+                // save visual to db
+                // make visual
+
+                // add visual
+                $instagramUser->addVisual();
+            }
 
 
 
@@ -88,7 +92,7 @@ class SaveParsedData
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
-            echo $e . PHP_EOL;
+            echo $e->getMessage() . PHP_EOL;
 
             $this->em->getConnection()->rollBack();
             return false;
@@ -103,16 +107,16 @@ class SaveParsedData
      * @param string $instagramUserUsername
      * @param string|null $instagramUserName
      * @param string|null $instagramUserDescription
-     * @return InstagramUser|mixed|null
+     * @return InstagramUser|null
      */
     public function getInstagramUser
     (
         string  $instagramUserUsername,
         ?string $instagramUserName,
         ?string $instagramUserDescription
-    )
+    ) : InstagramUser|null
     {
-        // does this InstagramUser exist in a db?
+        // does this Instagram User exist in a db?
         $instagramUser = $this->instagramUserRepository->findOne
         (
             'username',
@@ -122,7 +126,7 @@ class SaveParsedData
 
         if ($instagramUser === null) {
 
-            // save a new InstagramUser
+            // save a new Instagram User
             $instagramUser = $this->getSaveInstagramUser
             (
                 $instagramUserUsername,
@@ -161,6 +165,9 @@ class SaveParsedData
         $this->em->persist($instagramUser);
         return $instagramUser;
     }
+
+
+
 
 
 
