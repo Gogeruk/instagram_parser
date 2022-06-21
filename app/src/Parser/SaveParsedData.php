@@ -83,7 +83,7 @@ class SaveParsedData
         try {
 
             // save Instagram User
-            $instagramUser = $this->getInstagramUser
+            $instagramUser = $this->getSaveInstagramUser
             (
                 $instagramUserUsername,
                 $this->parsedDataProcessor->removeEmojis($instagramUserName),
@@ -192,42 +192,6 @@ class SaveParsedData
 
         $this->em->persist($visual);
         return $visual;
-    }
-
-
-    /**
-     * @param string $instagramUserUsername
-     * @param string|null $instagramUserName
-     * @param string|null $instagramUserDescription
-     * @return InstagramUser|null
-     */
-    public function getInstagramUser
-    (
-        string  $instagramUserUsername,
-        ?string $instagramUserName,
-        ?string $instagramUserDescription
-    ) : InstagramUser|null
-    {
-        // does this Instagram User exist in a db?
-        $instagramUser = $this->instagramUserRepository->findOne
-        (
-            'username',
-                $instagramUserUsername,
-            '='
-        )[0] ?? null;
-
-        if ($instagramUser === null) {
-
-            // save a new Instagram User
-            $instagramUser = $this->getSaveInstagramUser
-            (
-                $instagramUserUsername,
-                $instagramUserName,
-                $instagramUserDescription
-            );
-        }
-
-        return $instagramUser;
     }
 
 
