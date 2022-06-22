@@ -21,6 +21,10 @@ class Post
     #[ORM\OneToMany(mappedBy: 'Post', targetEntity: PostVisual::class)]
     private $postVisuals;
 
+    #[ORM\ManyToOne(targetEntity: InstagramUser::class, inversedBy: 'posts')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $InstagramUser;
+
     public function __construct()
     {
         $this->postVisuals = new ArrayCollection();
@@ -69,6 +73,18 @@ class Post
                 $postVisual->setPost(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getInstagramUser(): ?InstagramUser
+    {
+        return $this->InstagramUser;
+    }
+
+    public function setInstagramUser(?InstagramUser $InstagramUser): self
+    {
+        $this->InstagramUser = $InstagramUser;
 
         return $this;
     }

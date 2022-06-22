@@ -59,6 +59,26 @@ class SaveParsedData
 
     /**
      * @param string $instagramUserUsername
+     * @return bool
+     */
+    public function checkExistsInstagramUser
+    (
+        string $instagramUserUsername
+    ) : bool
+    {
+        if (!empty($this->instagramUserRepository->findOneBy(['username' => $instagramUserUsername]))) {
+
+            // exists
+            return true;
+        }
+
+        // does not exist
+        return false;
+    }
+
+
+    /**
+     * @param string $instagramUserUsername
      * @param string|null $instagramUserName
      * @param string|null $instagramUserDescription
      * @param array|null $instagramUserVisualUrls
@@ -135,6 +155,9 @@ class SaveParsedData
 
                     // add visual
                     $instagramUserPost->addPostVisual($instagramUserPostVisual);
+
+                    // add to Instagram User
+                    $instagramUser->addPost($instagramUserPost);
                 }
             }
 

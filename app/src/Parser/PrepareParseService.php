@@ -67,6 +67,11 @@ class PrepareParseService
             );
 
             // save data
+            if ($this->saveParsedData->checkExistsInstagramUser($data['username']) === true) {
+                echo 'USER: ' . $data['username'] . ' EXISTS' . PHP_EOL;
+                continue;
+            }
+
             $check = $this->saveParsedData->saveParsedDataWithTransaction
             (
                 $data['username'],

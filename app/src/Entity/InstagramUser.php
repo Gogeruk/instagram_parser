@@ -27,9 +27,13 @@ class InstagramUser
     #[ORM\OneToMany(mappedBy: 'InstagramUser', targetEntity: Visual::class)]
     private $visuals;
 
+    #[ORM\OneToMany(mappedBy: 'InstagramUser', targetEntity: Post::class)]
+    private $posts;
+
     public function __construct()
     {
         $this->visuals = new ArrayCollection();
+        $this->posts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -97,6 +101,36 @@ class InstagramUser
             // set the owning side to null (unless already changed)
             if ($visual->getInstagramUser() === $this) {
                 $visual->setInstagramUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Post>
+     */
+    public function getPosts(): Collection
+    {
+        return $this->posts;
+    }
+
+    public function addPost(Post $post): self
+    {
+        if (!$this->posts->contains($post)) {
+            $this->posts[] = $post;
+            $post->setInstagramUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePost(Post $post): self
+    {
+        if ($this->posts->removeElement($post)) {
+            // set the owning side to null (unless already changed)
+            if ($post->getInstagramUser() === $this) {
+                $post->setInstagramUser(null);
             }
         }
 
