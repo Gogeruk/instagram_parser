@@ -6,10 +6,10 @@ docker-compose up -d --build
 docker exec -it php_container_id sh
 
 3.
-composer install
+cp .env.example .env
 
 4.
-cp .env.example .env
+composer install
 
 5.
 bin/console doctrine:migrations:migrate
