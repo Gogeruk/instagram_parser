@@ -24,7 +24,7 @@ services:
     volumes:
       - ./app:/var/www/instagram_parser
     depends_on:
-      - db
+      - mysql
   nginx:
     container_name: nginx
     image: nginx:stable-alpine
@@ -35,4 +35,4 @@ services:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - php
-      - db
+      - mysql

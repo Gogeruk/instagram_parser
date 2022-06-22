@@ -1,13 +1,11 @@
+1.
+docker-compose up -d --build
 
+2.
+docker exec -it <php container> sh
 
+3.
+composer install
 
-
-
-
-
-
-add realtion to post user 
-
-check data in db 
-
-make a proper redne
+4.
+bin/console app:parse
