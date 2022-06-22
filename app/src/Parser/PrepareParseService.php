@@ -43,6 +43,7 @@ class PrepareParseService
      * @param string $pathToDriver
      * @param array $instagramUsernames
      * @return void
+     * @throws \Doctrine\DBAL\Exception
      * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
@@ -52,7 +53,7 @@ class PrepareParseService
     (
         string $pathToDriver,
         array  $instagramUsernames
-    )
+    ) : void
     {
         echo 'Driver path: ' . $pathToDriver . PHP_EOL;
         echo $this->border . PHP_EOL . 'Starting...' . PHP_EOL . PHP_EOL;
@@ -67,20 +68,23 @@ class PrepareParseService
             );
 
             // save data
-            if ($this->saveParsedData->checkExistsInstagramUser($data['username']) === true) {
-                echo 'USER: ' . $data['username'] . ' EXISTS' . PHP_EOL;
-                continue;
-            }
+            $check = false;
+            if (is_string($data['username'])) {
+                if ($this->saveParsedData->checkExistsInstagramUser($data['username']) === true) {
+                    echo 'USER: ' . $data['username'] . ' EXISTS' . PHP_EOL;
+                    continue;
+                }
 
-            $check = $this->saveParsedData->saveParsedDataWithTransaction
-            (
-                $data['username'],
-                $data['name'],
-                $data['description'],
-                $data['images'],
-                $data['posts']['text'],
-                $data['posts']['img']
-            );
+                $check = $this->saveParsedData->saveParsedDataWithTransaction
+                (
+                    $data['username'],
+                    $data['name'],
+                    $data['description'],
+                    $data['images'],
+                    $data['posts']['text'],
+                    $data['posts']['img']
+                );
+            }
 
             if ($check === true) {
                 echo 'SAVED USER: ' . $data['username'] . PHP_EOL;

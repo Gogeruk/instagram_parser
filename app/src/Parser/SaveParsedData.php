@@ -153,11 +153,11 @@ class SaveParsedData
                         $visualSavedCheck['path']
                     );
 
-                    // add visual
-                    $instagramUserPost->addPostVisual($instagramUserPostVisual);
-
                     // add to Instagram User
                     $instagramUser->addPost($instagramUserPost);
+
+                    // add visual
+                    $instagramUserPost->addPostVisual($instagramUserPostVisual);
                 }
             }
 

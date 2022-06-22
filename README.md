@@ -1,8 +1,9 @@
+
 1.
 docker-compose up -d --build
 
 2.
-docker exec -it <php container> sh
+docker exec -it php_container_id sh
 
 3.
 composer install
@@ -15,3 +16,5 @@ bin/console doctrine:migrations:migrate
 
 6.
 bin/console app:parse
+
+bin/console app:parse your_usernames
