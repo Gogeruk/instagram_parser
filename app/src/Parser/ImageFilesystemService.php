@@ -122,7 +122,7 @@ class ImageFilesystemService
         if ($dirPath === false) {
 
             // set a default path
-            $dirPath = $this->parameterBag->get('kernel.project_dir') . '/public/data/';
+            $dirPath = $this->parameterBag->get('kernel.project_dir') . '/images/';
         }
 
 
