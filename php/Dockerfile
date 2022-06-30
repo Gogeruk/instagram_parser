@@ -12,8 +12,14 @@ RUN apt update \
 
 # Install panther driver for firefox
 RUN echo "deb http://deb.debian.org/debian/ unstable main contrib non-free" >> /etc/apt/sources.list.d/debian.list
-RUN apt-get update
-RUN apt-get install -y --no-install-recommends firefox
+RUN apt update
+RUN apt install -y --no-install-recommends firefox
+
+
+# Install javascript dependencies
+RUN apt install npm -y
+RUN npm install --force
+RUN (npm run watch&)
 
 
 # Set the working directory
@@ -29,3 +35,7 @@ RUN curl -sS https://get.symfony.com/cli/installer | bash
 RUN mv /root/.symfony/bin/symfony /usr/local/bin/symfony
 RUN git config --global user.email "you@example.com" \
     && git config --global user.name "user"
+
+
+# Allowed memory size
+ENV PHP_MEMORY_LIMIT=128M
