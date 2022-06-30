@@ -1,11 +1,47 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Rand index{% endblock %}
+{% block title %}Parse index{% endblock %}
 
 {% block body %}
-    <h1>Rand index</h1>
+    <h1>Parse index</h1>
+
+    {# Parse #}
+
+        {# Inpyt instgram username #}
 
 
+
+        {# Click to parse and save to db #}
+
+
+
+    {# Display #}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Username</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <div>
+                {% for visual in user.visuals %}
+                <div>
+                    <img src="{{ visual.path }}">
+                </div>
+                {% endfor %}
+            </div>
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.description }}</td>
+            </tr>
+        {% endfor %}
+    </table>
 
 
 {% endblock %}
