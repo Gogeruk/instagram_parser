@@ -18,8 +18,6 @@ RUN apt install -y --no-install-recommends firefox
 
 # Install javascript dependencies
 RUN apt install npm -y
-RUN npm install --force
-RUN (npm run watch&)
 
 
 # Set the working directory
@@ -38,4 +36,4 @@ RUN git config --global user.email "you@example.com" \
 
 
 # Allowed memory size
-ENV PHP_MEMORY_LIMIT=128M
+ENV PHP_MEMORY_LIMIT=812M
