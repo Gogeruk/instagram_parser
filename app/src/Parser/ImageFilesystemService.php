@@ -37,7 +37,7 @@ class ImageFilesystemService
     public function saveVisual
     (
         string $url,
-        string $path = '/images/'
+        string $path = '/public/data/images/'
     ) : array|bool
     {
         try {
@@ -122,7 +122,7 @@ class ImageFilesystemService
         if ($dirPath === false) {
 
             // set a default path
-            $dirPath = $this->parameterBag->get('kernel.project_dir') . '/images/';
+            $dirPath = $this->parameterBag->get('kernel.project_dir') . '/public/data/images/';
         }
 
 
