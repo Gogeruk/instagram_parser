@@ -26,7 +26,7 @@ class InstagramUserParserController extends AbstractController
     /**
      * @Route("/instagram/new", name="app_instagram_new")
      */
-    public function InstagramParseUser(Request $request): Response
+    public function InstagramParseUser(Request $request, InstagramUserRepository $instagramUserRepository): Response
     {
         $form = null;
         if ($request->isMethod('POST')) {
@@ -36,18 +36,26 @@ class InstagramUserParserController extends AbstractController
 
         if ($form && $form->isSubmitted() && $form->isValid()) {
 
-            // !!!
-            // make twig more afficient
-            // !!!
+            $instagramUser = $form->getData();
+            $instagramUserInDatabase = $instagramUserRepository->findOne
+            (
+                'username',
+                $instagramUser->getUsername(),
+                '='
+            )[0] ?? null;
+
+            // if user exists redirect to table with data by id
+            if (!is_null($instagramUserInDatabase)) {
+                return $this->render('instagram_user_parser/index.html.twig', [
+                    'users' => [$instagramUserInDatabase],
+                ]);
+            }
 
 
-            // if yser exists redirect to his table by id
+            // parse new user
 
 
-            // else parse user
-
-
-            // save user
+            // save new user
 
 
             // display user by id

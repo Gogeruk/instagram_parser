@@ -11,6 +11,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class InstagramUserType extends AbstractType
 {
@@ -26,7 +27,8 @@ class InstagramUserType extends AbstractType
                     'constraints' => [
                         new NotBlank(),
                         new NotNull(),
-                        new Length(null, 1, 30),
+                        new Regex('/^@.*$/', 'Instagram username has to begin from \'@\''),
+                        new Length(null, null, 30)
                     ]
                 ]
             )

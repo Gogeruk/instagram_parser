@@ -39,6 +39,50 @@ class InstagramUserRepository extends ServiceEntityRepository
         }
     }
 
+
+    /**
+     * @param string $field
+     * @param string $param
+     * @param string $operator
+     * @return int|mixed|string
+     */
+    public function findOne(
+        string $field,
+        string $param,
+        string $operator
+    )
+    {
+        return $this->createQueryBuilder('e')
+            ->where('e.' . $field . ' ' . $operator . ' :' . $field)
+            ->setParameter($field, $param)
+            ->setMaxResults(1)
+            ->orderBy('e.id', 'DESC')
+            ->getQuery()
+            ->useQueryCache(false)
+            ->useResultCache(false)
+            ->getResult();
+    }
+
+
+    /**
+     * @param InstagramUser|null $instagramUser
+     * @return InstagramUser|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findOneOtherThan(?InstagramUser $instagramUser): ?InstagramUser
+    {
+        $qb = $this->createQueryBuilder('instagram_user')
+            ->setMaxResults(1);
+
+        if ($instagramUser && $instagramUser->getId()) {
+            $qb->andWhere('instagram_user.id != :id')
+                ->setParameter('id', $instagramUser->getId());
+        }
+
+        return $qb->getQuery()->getOneOrNullResult();
+    }
+
+
 //    /**
 //     * @return InstagramUser[] Returns an array of InstagramUser objects
 //     */
