@@ -10,6 +10,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 class InstagramUserType extends AbstractType
 {
@@ -24,6 +25,7 @@ class InstagramUserType extends AbstractType
                     'trim' => false,
                     'constraints' => [
                         new NotBlank(),
+                        new NotNull(),
                         new Length(null, 2, 255),
                     ]
                 ]
