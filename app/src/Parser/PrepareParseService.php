@@ -86,7 +86,7 @@ class PrepareParseService
                 );
             }
 
-            if ($check === true) {
+            if (is_object($check)) {
                 echo 'SAVED USER: ' . $data['username'] . PHP_EOL;
             }
         }

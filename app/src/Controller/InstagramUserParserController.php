@@ -3,11 +3,14 @@
 namespace App\Controller;
 
 use App\Form\InstagramUserType;
+use App\Parser\InstagramParser;
+use App\Parser\SaveParsedData;
 use App\Repository\InstagramUserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 
 class InstagramUserParserController extends AbstractController
@@ -26,7 +29,14 @@ class InstagramUserParserController extends AbstractController
     /**
      * @Route("/instagram/new", name="app_instagram_new")
      */
-    public function InstagramParseUser(Request $request, InstagramUserRepository $instagramUserRepository): Response
+    public function parseInstagramUser
+    (
+        Request                 $request,
+        InstagramUserRepository $instagramUserRepository,
+        ParameterBagInterface   $parameterBag,
+        InstagramParser         $instagramParser,
+        SaveParsedData          $saveParsedData
+    ): Response
     {
         $form = null;
         if ($request->isMethod('POST')) {
@@ -36,11 +46,11 @@ class InstagramUserParserController extends AbstractController
 
         if ($form && $form->isSubmitted() && $form->isValid()) {
 
-            $instagramUser = $form->getData();
+            $instagramUserName = $form->getData()->getUsername();
             $instagramUserInDatabase = $instagramUserRepository->findOne
             (
                 'username',
-                $instagramUser->getUsername(),
+                    $instagramUserName,
                 '='
             )[0] ?? null;
 
@@ -51,15 +61,34 @@ class InstagramUserParserController extends AbstractController
                 ]);
             }
 
-
             // parse new user
-
+            $data = $instagramParser->getDataFromDumpor
+            (
+                $parameterBag->get('kernel.project_dir') . "/drivers/geckodriver",
+                $instagramUserName
+            );
 
             // save new user
+            $instagramUser = $saveParsedData->saveParsedDataWithTransaction
+            (
+                $data['username'],
+                $data['name'],
+                $data['description'],
+                $data['images'],
+                $data['posts']['text'],
+                $data['posts']['img']
+            );
 
 
-            // display user by id
-            return $this->redirectToRoute('app_instagram_index');
+            if ($instagramUser === false) {
+
+                // dispakt stuff?????
+            }
+
+            // display user
+            return $this->render('instagram_user_parser/index.html.twig', [
+                'users' => [$instagramUser],
+            ]);
         }
 
         return $this->renderForm('instagram_user_parser/new.html.twig', [

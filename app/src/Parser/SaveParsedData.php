@@ -84,7 +84,7 @@ class SaveParsedData
      * @param array|null $instagramUserVisualUrls
      * @param array|null $postTexts
      * @param array|null $postVisualUrls
-     * @return bool
+     * @return bool|InstagramUser
      * @throws \Doctrine\DBAL\Exception
      */
     public function saveParsedDataWithTransaction
@@ -95,7 +95,7 @@ class SaveParsedData
         ?array  $instagramUserVisualUrls,
         ?array  $postTexts,
         ?array  $postVisualUrls
-    ) : bool
+    ) : bool|InstagramUser
     {
         // start transaction
         $this->em->getConnection()->beginTransaction();
@@ -172,7 +172,7 @@ class SaveParsedData
         }
 
         $this->em->clear();
-        return true;
+        return $instagramUser;
     }
 
 
