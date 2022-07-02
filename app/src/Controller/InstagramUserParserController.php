@@ -34,7 +34,10 @@ class InstagramUserParserController extends AbstractController
             $form->handleRequest($request);
         }
 
-        if ($form) {
+        if (
+            $form && $form->isSubmitted() && $form->isValid() 
+
+        ) {
 
             return $this->redirectToRoute('app_instagram_index');
         }

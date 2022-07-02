@@ -1,15 +1,11 @@
-{#<div class="form-group" data-action="change->live#update">#}
-<div >
+<div class="form-group" data-action="change->live#update">
 
     {{ form_start(this.form) }}
 
         {{ form_row(this.form.username) }}
 
         <button
-                type="submit"
                 class="btn btn-secondary"
-                data-action="live#action"
-                data-action-name="parse"
                 data-loading="addAttribute(disabled)"
         >{{ buttonLabel }}</button>
 
