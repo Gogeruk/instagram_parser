@@ -36,10 +36,15 @@ class InstagramUserParserController extends AbstractController
 
         if ($form && $form->isSubmitted() && $form->isValid()) {
 
+            // !!!
+            // make twig more afficient
+            // !!!
+
+
             // if yser exists redirect to his table by id
 
 
-            // get user
+            // else parse user
 
 
             // save user

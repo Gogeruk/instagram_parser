@@ -26,7 +26,7 @@ class InstagramUserType extends AbstractType
                     'constraints' => [
                         new NotBlank(),
                         new NotNull(),
-                        new Length(null, 2, 255),
+                        new Length(null, 1, 30),
                     ]
                 ]
             )

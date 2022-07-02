@@ -1,0 +1,59 @@
+{% extends 'instagram_user_parser/center_div.html.twig' %}
+
+{% block center_div %}
+    <table class="table table-primary m-3">
+        <thead>
+        <tr>
+            <th scope="col">Profile Image</th>
+            <th scope="col">Name</th>
+            <th scope="col">Username</th>
+            <th scope="col">Profile Description</th>
+        </tr>
+        </thead>
+        <tbody class="mb-4">
+        <tr>
+            <td>
+                {% for visual in user.visuals %}
+                    <img width="95" height="95" class="rounded img-fluid" src="/{{ visual.path }}"
+                         alt="/data/blank-avatar.png">
+                {% endfor %}
+            </td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.username }}</td>
+            <td>
+                {% if user.description == false %}
+                    None
+                {% endif %}
+                {{ user.description }}
+            </td>
+        </tr>
+        </tbody>
+
+        <thead>
+        <tr>
+            <th scope="col">Post Images</th>
+            <th scope="col">Post Text</th>
+        </tr>
+        </thead>
+
+        {% for post in user.posts %}
+            <tbody class="mb-4">
+            <tr>
+                <td>
+                    {% for postVisual in  post.postVisuals %}
+                        <img width="95" height="95" class="rounded img-fluid"
+                             src="/{{ postVisual.path }}"
+                             alt="https://kravmaganewcastle.com.au/wp-content/uploads/2017/04/default-image.jpg">
+                    {% endfor %}
+                </td>
+                <td>
+                    {% if post.text == false %}
+                        No text
+                    {% endif %}
+                    {{ post.text }}
+                </td>
+            </tr>
+            </tbody>
+        {% endfor %}
+    </table>
+{% endblock %}
