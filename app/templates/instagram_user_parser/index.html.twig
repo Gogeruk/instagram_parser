@@ -4,34 +4,7 @@
 
 {% block body %}
     <div class="m-3 border border-primary">
-
-
-
-        {# Parse #}
-        <div class="container mb-3">
-            <div class="row m-3">
-                <div class="col-sm m-3">
-                    <form class="m-3">
-                        <div class="form-group">
-                            <label for="inputUsername">Username to parse</label>
-                            <input type="password" class="form-control" id="inputUsername" placeholder="Username">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-
-
-
-
-
-
-
-
-
-
+        <a class="m-2" href="{{ path('app_instagram_new') }}">parse new user</a>
 
         {# Display #}
         {% for user in users %}

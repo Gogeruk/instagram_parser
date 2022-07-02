@@ -20,7 +20,7 @@
         "symfony/proxy-manager-bridge": "6.0.*",
         "symfony/runtime": "6.0.*",
         "symfony/twig-bundle": "6.0.*",
-        "symfony/ux-live-component": "^2.2",
+        "symfony/ux-live-component": "^2.1",
         "symfony/ux-twig-component": "^2.2",
         "symfony/webpack-encore-bundle": "^1.14",
         "symfony/yaml": "6.0.*",
