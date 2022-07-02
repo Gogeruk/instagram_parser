@@ -35,11 +35,11 @@ class InstagramUserParserController extends AbstractController
         }
 
         if (
-            $form && $form->isSubmitted() && $form->isValid() 
+            $form && $form->isSubmitted() && $form->isValid()
 
         ) {
 
-            return $this->redirectToRoute('app_instagram_index');
+//            return $this->redirectToRoute('app_instagram_index');
         }
 
         return $this->renderForm('instagram_user_parser/new.html.twig', [
