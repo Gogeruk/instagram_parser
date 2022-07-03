@@ -1,9 +1,13 @@
 {% extends 'instagram_user_parser/center_div.html.twig' %}
 
 {% block center_div %}
+    {% if failed_to_parse %}
+        <a class="m-2" href="{{ path('app_instagram_index') }}">Failed to Parse User</a>
+    {% else %}
         {{ component('instagram_user_form', {
             form: form
         }) }}
+    {% endif %}
 {% endblock %}
 
 

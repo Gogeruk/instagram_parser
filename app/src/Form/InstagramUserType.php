@@ -24,6 +24,9 @@ class InstagramUserType extends AbstractType
                 TextType::class,
                 [
                     'trim' => false,
+                    'attr'   =>  [
+                        'class'   => 'form-control'
+                    ],
                     'constraints' => [
                         new NotBlank(),
                         new NotNull(),

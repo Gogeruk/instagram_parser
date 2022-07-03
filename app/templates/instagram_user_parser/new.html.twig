@@ -1,11 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% use 'instagram_user_parser/center_div.html.twig' %}
-
 {% block title %}New Instagram User{% endblock %}
 
 {% block body %}
-        <a class="m-2" href="{{ path('app_instagram_index') }}">back to list</a>
+        <a class="m-2" href="{{ path('app_instagram_index') }}">Back to The List</a>
 
         {# Parse #}
         {{ include('instagram_user_parser/instagram_user_form_center.html.twig') }}

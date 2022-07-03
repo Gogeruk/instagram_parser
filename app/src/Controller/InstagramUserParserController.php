@@ -61,13 +61,6 @@ class InstagramUserParserController extends AbstractController
                 ]);
             }
 
-            //
-            //
-            //
-            $this->render('instagram_user_parser/index.html.twig', [
-                'users' => $instagramUserRepository->findAll(),
-            ]);
-
             // parse new user
             $data = $instagramParser->getDataFromDumpor
             (
@@ -86,16 +79,14 @@ class InstagramUserParserController extends AbstractController
                 $data['posts']['img']
             );
 
-            //
-            //
-            //
-            $this->render('instagram_user_parser/index.html.twig', [
-                'users' => $instagramUserRepository->findAll(),
-            ]);
-
+            // failed to parse
             if ($instagramUser === false) {
 
-                // dispakt stuff?????
+                // display error
+                return $this->renderForm('instagram_user_parser/new.html.twig', [
+                    'form' => $form,
+                    'failed_to_parse' => true
+                ]);
             }
 
             // display user
@@ -106,6 +97,7 @@ class InstagramUserParserController extends AbstractController
 
         return $this->renderForm('instagram_user_parser/new.html.twig', [
             'form' => $form,
+            'failed_to_parse' => false
         ]);
     }
 }
