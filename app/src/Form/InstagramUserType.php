@@ -25,7 +25,8 @@ class InstagramUserType extends AbstractType
                 [
                     'trim' => false,
                     'attr'   =>  [
-                        'class'   => 'form-control'
+                        'class'  => 'form-control',
+                        'placeholder' => '@bob'
                     ],
                     'constraints' => [
                         new NotBlank(),
