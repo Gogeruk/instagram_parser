@@ -61,6 +61,12 @@ class InstagramUserParserController extends AbstractController
                 ]);
             }
 
+
+            // !!!!!!!!!!!!!!!!
+            // !!!!!!!!!!!!!!!!
+            // !!!!!!!!!!!!!!!!
+            // add to the RabbitMQ
+
             // parse new user
             $data = $instagramParser->getDataFromDumpor
             (
@@ -78,6 +84,13 @@ class InstagramUserParserController extends AbstractController
                 $data['posts']['text'],
                 $data['posts']['img']
             );
+
+
+            // !!!!!!!!!!!!!!!!
+            // !!!!!!!!!!!!!!!!
+            // !!!!!!!!!!!!!!!!
+            // rework redirects if needed
+
 
             // failed to parse
             if ($instagramUser === false) {
