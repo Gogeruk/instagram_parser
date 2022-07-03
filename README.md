@@ -16,7 +16,7 @@ composer install
 
 5.
 npm install --force
-npm run watch
+(npm run watch&)
 
 6
 bin/console doctrine:migrations:migrate
