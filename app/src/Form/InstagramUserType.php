@@ -27,8 +27,18 @@ class InstagramUserType extends AbstractType
                     'constraints' => [
                         new NotBlank(),
                         new NotNull(),
-                        new Regex('/^@.*$/', 'Instagram username has to begin from \'@\''),
-                        new Length(null, null, 30)
+                        new Regex('/^@.*$/', 'Instagram username has to begin from \'@\'.'),
+                        new Length
+                        (
+                            null,
+                            null,
+                            30,
+                            null,
+                            null,
+                            null,
+                            null,
+                            'instagram username cannot be longer than 30 characters.'
+                        )
                     ]
                 ]
             )

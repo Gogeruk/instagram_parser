@@ -61,6 +61,13 @@ class InstagramUserParserController extends AbstractController
                 ]);
             }
 
+            //
+            //
+            //
+            $this->render('instagram_user_parser/index.html.twig', [
+                'users' => $instagramUserRepository->findAll(),
+            ]);
+
             // parse new user
             $data = $instagramParser->getDataFromDumpor
             (
@@ -79,6 +86,12 @@ class InstagramUserParserController extends AbstractController
                 $data['posts']['img']
             );
 
+            //
+            //
+            //
+            $this->render('instagram_user_parser/index.html.twig', [
+                'users' => $instagramUserRepository->findAll(),
+            ]);
 
             if ($instagramUser === false) {
 
