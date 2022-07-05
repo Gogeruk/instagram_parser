@@ -40,12 +40,13 @@ services:
     container_name: rabbitmq
     image: rabbitmq:3.10.5-management-alpine
     ports:
-      - '5673:5672'
-      - '15673:15672'
+      - '5672:5672'
+      - '15672:15672'
     volumes:
       - ./rabbitmq/data/:/var/lib/rabbitmq/
       - ./rabbitmq/log/:/var/log/rabbitmq
-    command: bash -c "sleep 10; rabbitmq-server;"
+    depends_on:
+      - php
     networks:
       - app-network
 

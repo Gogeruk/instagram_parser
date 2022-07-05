@@ -2,21 +2,21 @@ FROM php:8.0-fpm
 
 # PHP extensions
 RUN apt update \
-    && apt install -y zlib1g-dev curl g++ git libicu-dev wget zip libzip-dev zip libffi-dev librabbitmq-dev libgmp-dev libssl-dev vim \
-    && docker-php-ext-install intl opcache mysqli pdo pdo_mysql \
-    && pecl install apcu \
-    && docker-php-ext-enable apcu \
+    && apt install -y zlib1g-dev curl g++ git libicu-dev wget zip libzip-dev zip libffi-dev librabbitmq-dev libssh-dev libgmp-dev libssl-dev rabbitmq-c-dev vim \
     && docker-php-ext-configure zip \
     && docker-php-ext-install zip \
     && docker-php-ext-install bcmath \
     && docker-php-ext-install pcntl \
-    && docker-php-ext-install sockets
-
-
-## PHP AMQP
-RUN apt-get install -y librabbitmq-dev libssl-dev
-RUN pecl install amqp
-RUN docker-php-ext-enable amqp
+    && docker-php-ext-install sockets \
+    && docker-php-ext-install intl \
+    && docker-php-ext-install opcache \
+    && docker-php-ext-install pdo \
+    && docker-php-ext-install sockets \
+    && docker-php-ext-install pdo_mysql \
+    && pecl install apcu \
+    && pecl install amqp \
+    && docker-php-ext-enable apcu \
+    && docker-php-ext-enable amqp
 
 
 # Install panther driver for firefox
