@@ -20,6 +20,8 @@ services:
       - '4306:3306'
     volumes:
       - ./mysql:/var/lib/mysql
+    networks:
+      - app-network
 
   php:
     container_name: php
@@ -31,6 +33,8 @@ services:
       - ./app:/var/www/instagram_parser
     depends_on:
       - mysql
+    networks:
+      - app-network
 
   rabbitmq:
     container_name: rabbitmq
@@ -42,6 +46,8 @@ services:
       - ./rabbitmq/data/:/var/lib/rabbitmq/
       - ./rabbitmq/log/:/var/log/rabbitmq
     command: bash -c "sleep 10; rabbitmq-server;"
+    networks:
+      - app-network
 
   nginx:
     container_name: nginx
@@ -54,3 +60,10 @@ services:
     depends_on:
       - php
       - mysql
+      - rabbitmq
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
