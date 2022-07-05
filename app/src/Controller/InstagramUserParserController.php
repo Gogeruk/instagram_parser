@@ -41,6 +41,7 @@ class InstagramUserParserController extends AbstractController
         $form = null;
         if ($request->isMethod('POST')) {
             $form = $this->createForm(InstagramUserType::class);
+
             $form->handleRequest($request);
         }
 
@@ -103,6 +104,21 @@ class InstagramUserParserController extends AbstractController
             }
 
             // display user
+
+            // !!!!
+            // !!!!
+            // !!!!
+            // maybe return a load page gere
+            // and than after rabbitmq finishes redirect from it to table
+            //
+            // or
+            // maybe show the full table, but a new user is marked as loading
+            // until page updates, and he has parsed data
+            //
+            // or
+            // simply return to table
+            // at some point user will be parsed
+
             return $this->render('instagram_user_parser/index.html.twig', [
                 'users' => [$instagramUser],
             ]);

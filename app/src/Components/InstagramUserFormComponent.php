@@ -23,10 +23,14 @@ class InstagramUserFormComponent extends AbstractController
     #[LiveProp(fieldName: 'initialFormData')]
     public ?InstagramUser $InstagramUser = null;
 
+    /**
+     * @var string
+     */
     #[LiveProp]
     public string $buttonLabel = 'Parse';
 
     /**
+     * @return FormInterface
      * Used to re-create the InstagramUserType form for re-rendering.
      */
     protected function instantiateForm(): FormInterface
