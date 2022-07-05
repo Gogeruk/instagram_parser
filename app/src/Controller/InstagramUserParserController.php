@@ -69,22 +69,22 @@ class InstagramUserParserController extends AbstractController
             // add to the RabbitMQ
 
             // parse new user
-            $data = $instagramParser->getDataFromDumpor
-            (
-                $parameterBag->get('kernel.project_dir') . "/drivers/geckodriver",
-                $instagramUserName
-            );
-
-            // save new user
-            $instagramUser = $saveParsedData->saveParsedDataWithTransaction
-            (
-                $data['username'],
-                $data['name'],
-                $data['description'],
-                $data['images'],
-                $data['posts']['text'],
-                $data['posts']['img']
-            );
+//            $data = $instagramParser->getDataFromDumpor
+//            (
+//                $parameterBag->get('kernel.project_dir') . "/drivers/geckodriver",
+//                $instagramUserName
+//            );
+//
+//            // save new user
+//            $instagramUser = $saveParsedData->saveParsedDataWithTransaction
+//            (
+//                $data['username'],
+//                $data['name'],
+//                $data['description'],
+//                $data['images'],
+//                $data['posts']['text'],
+//                $data['posts']['img']
+//            );
 
 
             // !!!!!!!!!!!!!!!!
