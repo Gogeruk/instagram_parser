@@ -1,7 +1,12 @@
 version: '3.7'
 
-# Source: https://www.twilio.com/blog/get-started-docker-symfony
+# Source:
+# https://www.twilio.com/blog/get-started-docker-symfony
+# https://github.com/symfony/panther
+# https://x-team.com/blog/set-up-rabbitmq-with-docker-compose/
+# https://dev.to/fabiothiroki/introduction-to-rabbitmq-and-symfony-2an4
 services:
+
   mysql:
     container_name: db
     image: mysql:8.0
@@ -15,6 +20,7 @@ services:
       - '4306:3306'
     volumes:
       - ./mysql:/var/lib/mysql
+
   php:
     container_name: php
     build:
@@ -25,6 +31,18 @@ services:
       - ./app:/var/www/instagram_parser
     depends_on:
       - mysql
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.10.5-management-alpine
+    ports:
+      - '5673:5672'
+      - '15673:15672'
+    volumes:
+      - ./rabbitmq/data/:/var/lib/rabbitmq/
+      - ./rabbitmq/log/:/var/log/rabbitmq
+    command: bash -c "sleep 10; rabbitmq-server;"
+
   nginx:
     container_name: nginx
     image: nginx:stable-alpine
