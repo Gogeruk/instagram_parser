@@ -5,7 +5,6 @@ framework:
 
         transports:
              async: '%env(MESSENGER_TRANSPORT_DSN)%'
-            # amqp: '%env(MESSENGER_TRANSPORT_DSN)%'
 
             # https://symfony.com/doc/current/messenger.html#transport-configuration
             # async: '%env(MESSENGER_TRANSPORT_DSN)%'
@@ -14,7 +13,6 @@ framework:
 
         routing:
              'App\MessageBroker\RabbitMQ\Message\SampleMessage': async
-            # 'App\MessageBroker\RabbitMQ\Message\SampleMessage': amqp
 
             # Route your messages to the transports
             # 'App\Message\YourMessage': async

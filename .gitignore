@@ -1,6 +1,7 @@
 /.idea
 /mysql/
-/rabbitmq/
+/rabbitmq/data/
+/rabbitmq/log/
 /app/.env
 /app/.env.local.php
 /app/.env.*.local

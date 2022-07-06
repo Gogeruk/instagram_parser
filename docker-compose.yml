@@ -38,7 +38,8 @@ services:
 
   rabbitmq:
     container_name: rabbitmq
-    image: rabbitmq:3.10.5-management-alpine
+    build:
+      context: ./rabbitmq
     ports:
       - '5672:5672'
       - '15672:15672'
