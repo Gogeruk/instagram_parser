@@ -2,6 +2,11 @@
 WORK IN PROGRESS
 
 
+
+for future me
+fix rabbitmq and push parser to it
+
+
 1.
 docker-compose up -d --build
 
